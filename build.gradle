@@ -1,0 +1,15 @@
+apply plugin : 'java'
+
+repositories {
+  mavenCentral()
+}
+
+def springVersion = '3.2.2.RELEASE'
+
+dependencies {
+  compile 'org.eclipse.jetty:jetty-server:8.1.10.v20130312'
+  compile "org.springframework:spring-web:${springVersion}"
+  compile 'com.google.guava:guava:14.0.1'
+  testCompile 'junit:junit:4.11'
+  testCompile "org.springframework:spring-test:${springVersion}" 
+}
