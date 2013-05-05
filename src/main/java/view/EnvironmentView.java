@@ -1,8 +1,8 @@
 package view;
 
+import application.Routes;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 
@@ -70,5 +70,9 @@ public class EnvironmentView extends PropertyContainerView{
     @Override
     public String toString() {
         return Objects.toStringHelper(this.getClass()).add("applications", applications).add("name",name).add("subEnvironments", subEnvironments).add("properties", properties).toString();
+    }
+
+    public String getLink(){
+        return Routes.to().environment().environmentDetails(getName());
     }
 }

@@ -2,6 +2,7 @@ package model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.Map;
@@ -56,5 +57,19 @@ public class Environment extends ChildPropertyContainer{
 
     public Collection<Application> getLocalApplications() {
         return applications.values();
+    }
+
+    public Environment findEnvironment(String name) {
+        if(name.equals(getName())){
+            return this;
+        }else{
+            for(Environment environment: subEnvironments.values()){
+                Environment environment1 = environment.findEnvironment(name);
+                if(environment1 != null){
+                    return environment1;
+                }
+            }
+        }
+        return null;
     }
 }

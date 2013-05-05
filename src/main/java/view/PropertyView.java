@@ -8,7 +8,7 @@ public class PropertyView {
     private String derivedValue;
     private String value;
 
-    private PropertyView(boolean isInherited, String key, String valu, String derivedValue) {
+    private PropertyView(boolean isInherited, String key, String value, String derivedValue) {
         inherited = isInherited;
         this.key = key;
         this.derivedValue = derivedValue;
@@ -48,5 +48,17 @@ public class PropertyView {
 
     public String getKey() {
         return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getDerivedValue() {
+        return derivedValue;
+    }
+
+    public boolean isInherited() {
+        return inherited;
     }
 }

@@ -1,15 +1,35 @@
-apply plugin : 'java'
+apply plugin : 'war'
 
 repositories {
   mavenCentral()
 }
 
 def springVersion = '3.2.2.RELEASE'
+def jettyVersion = '8.1.10.v20130312'
+
+configurations {
+  executableWarDeps
+}
 
 dependencies {
-  compile 'org.eclipse.jetty:jetty-server:8.1.10.v20130312'
+  compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
+  executableWarDeps "org.eclipse.jetty:jetty-server:${jettyVersion}"
+  compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+  executableWarDeps "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
   compile "org.springframework:spring-web:${springVersion}"
+  compile "org.springframework:spring-webmvc:${springVersion}"
+  runtime 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
   compile 'com.google.guava:guava:14.0.1'
   testCompile 'junit:junit:4.11'
   testCompile "org.springframework:spring-test:${springVersion}" 
+}
+
+war {
+  from {configurations.executableWarDeps.collect {
+    it.isDirectory() ? it : project.zipTree(it)
+    }
+  }
+  from "$buildDir/classes/main"
+  manifest { attributes 'Main-Class': 'application.Application' }
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
