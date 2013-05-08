@@ -8,4 +8,5 @@ public interface PropertyContainer {
     public Set<String> getAllPropertyKeys();
     public String get(String propertyKey);
     public void put(String propertyKey,String propertyValue);
+    public void remove(String propertyKey);
 }

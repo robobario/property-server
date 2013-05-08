@@ -1,6 +1,7 @@
 package web.view;
 
 import com.google.common.base.Objects;
+import web.application.Routes;
 
 public class ApplicationView extends PropertyContainerView{
 
@@ -31,5 +32,9 @@ public class ApplicationView extends PropertyContainerView{
     @Override
     public String toString() {
         return Objects.toStringHelper(this.getClass()).add("name", name).add("properties", properties).toString();
+    }
+
+    public String getLink(){
+        return Routes.to().application().applicationDetails(getName());
     }
 }

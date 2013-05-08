@@ -11,6 +11,12 @@ public class ViewCreator {
         return environmentView;
     }
 
+    public static ApplicationView createApplicationView(Application application){
+        ApplicationView applicationView = ApplicationView.create(application.getName());
+        addProperties(application, applicationView);
+        return applicationView;
+    }
+
     private static void addSubApplications(Environment environment, EnvironmentView environmentView) {
         for(Environment sub : environment.getSubEnvironments()){
             environmentView.addSubEnvironment(createEnvironmentView(sub));

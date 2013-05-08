@@ -4,12 +4,14 @@ import service.environment.model.Environment;
 import service.history.EnvironmentSnapshotService;
 import service.history.model.EnvironmentSnapshot;
 
-import javax.annotation.Resource;
-
 public class SnapshottingEnvironmentService implements EnvironmentService {
 
-    @Resource
-    EnvironmentSnapshotService service;
+    private final EnvironmentSnapshotService service;
+
+
+    public SnapshottingEnvironmentService(EnvironmentSnapshotService service) {
+        this.service = service;
+    }
 
 
     @Override

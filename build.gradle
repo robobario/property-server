@@ -20,8 +20,10 @@ dependencies {
   compile "org.springframework:spring-webmvc:${springVersion}"
   compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
   compile 'com.google.guava:guava:14.0.1'
+  runtime 'org.slf4j:jcl-over-slf4j:1.7.5'
+  runtime 'ch.qos.logback:logback-classic:1.0.12'
   testCompile 'junit:junit:4.11'
-  testCompile "org.springframework:spring-test:${springVersion}" 
+  testCompile "org.springframework:spring-test:${springVersion}"
 }
 
 war {
@@ -30,6 +32,6 @@ war {
     }
   }
   from "$buildDir/classes/main"
-  manifest { attributes 'Main-Class': 'application.Application' }
+  manifest { attributes 'Main-Class': 'web.application.Application' }
   exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }

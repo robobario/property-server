@@ -1,11 +1,11 @@
 package service.environment.model;
 
+import static com.google.common.collect.Sets.union;
+
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 import java.util.Set;
-
-import static com.google.common.collect.Sets.union;
 
 public class ChildPropertyContainer implements PropertyContainer{
     protected final String name;
@@ -43,6 +43,13 @@ public class ChildPropertyContainer implements PropertyContainer{
     public void put(String propertyKey, String propertyValue) {
         properties.put(propertyKey,propertyValue);
     }
+
+
+    @Override
+    public void remove(String propertyKey) {
+        properties.remove(propertyKey);
+    }
+
 
     public Map<String, String> getLocalProperties(){
         return properties.getAllProperties();

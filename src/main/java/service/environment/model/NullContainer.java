@@ -26,4 +26,10 @@ public class NullContainer implements PropertyContainer{
     public void put(String propertyKey, String propertyValue) {
         throw new RuntimeException("attempted to put a property into the null container");
     }
+
+
+    @Override
+    public void remove(String propertyKey) {
+        throw new RuntimeException("attempted to remove a property from the null container");
+    }
 }

@@ -130,6 +130,13 @@ public class PropertyReplacingContainer implements PropertyContainer {
         container.put(propertyKey, propertyValue);
     }
 
+
+    @Override
+    public void remove(String propertyKey) {
+        container.remove(propertyKey);
+    }
+
+
     private static class Token{
         private boolean shouldContinue;
         private String tokenValue;
