@@ -20,7 +20,7 @@ public class PropertyContainerView {
     }
 
     public List<PropertyView> getProperties() {
-        return Ordering.natural().onResultOf(new Function<PropertyView, String>() {
+        return Ordering.<String>natural().onResultOf(new Function<PropertyView, String>() {
             @Override
             public String apply(PropertyView input) {
                 return input.getKey();
