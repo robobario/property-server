@@ -1,8 +1,8 @@
 package service.environment;
 
-import model.Environment;
+import service.environment.model.Environment;
 import service.history.EnvironmentSnapshotService;
-import service.history.EnvironmentSnapshot;
+import service.history.model.EnvironmentSnapshot;
 
 import javax.annotation.Resource;
 
@@ -24,6 +24,6 @@ public class SnapshottingEnvironmentService implements EnvironmentService {
 
     @Override
     public void update(Environment environment) {
-        service.recordSnapshot(environment);
+        service.recordSnapshot(EnvironmentSnapshot.snapshotOf(environment));
     }
 }

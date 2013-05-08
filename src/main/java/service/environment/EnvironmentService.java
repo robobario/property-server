@@ -1,6 +1,6 @@
 package service.environment;
 
-import model.Environment;
+import service.environment.model.Environment;
 
 public interface EnvironmentService {
 

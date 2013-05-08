@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Ordering;
 import com.google.common.io.Files;
 import com.google.common.primitives.Longs;
-import model.Environment;
+import service.history.model.EnvironmentSnapshot;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,10 +60,9 @@ public class FileSystemEnvironmentSnapshotService implements EnvironmentSnapshot
 
 
     @Override
-    public SnapshotId recordSnapshot(Environment environment) {
+    public SnapshotId recordSnapshot(EnvironmentSnapshot snapshot) {
         SnapshotId snapshotId = createSnapshotId();
         File file = createNewSnapshotFileInRootDir(snapshotId);
-        EnvironmentSnapshot snapshot = EnvironmentSnapshot.snapshotOf(environment);
         recordSnapshotInFile(snapshot, file);
         addSnapshotToCache(snapshotId, snapshot);
         return snapshotId;

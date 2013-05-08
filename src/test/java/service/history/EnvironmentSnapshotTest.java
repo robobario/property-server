@@ -1,16 +1,19 @@
 package service.history;
 
-import static model.Environment.createRootEnvironment;
+import static service.environment.model.Environment.createRootEnvironment;
 import static org.junit.Assert.assertEquals;
-import static service.history.EnvironmentSnapshot.snapshotOf;
+import static service.history.model.EnvironmentSnapshot.snapshotOf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import model.Application;
-import model.Environment;
+import service.environment.model.Application;
+import service.environment.model.Environment;
 import org.junit.Test;
+import service.history.model.EnvironmentNode;
+import service.history.model.EnvironmentSnapshot;
+import service.history.model.PropertyNode;
 
 import java.io.IOException;
 

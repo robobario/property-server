@@ -1,12 +1,12 @@
 package service.history;
 
-import model.Environment;
+import service.history.model.EnvironmentSnapshot;
 
 import java.util.Collection;
 
 public interface EnvironmentSnapshotService {
 
-    public SnapshotId recordSnapshot(Environment environment);
+    public SnapshotId recordSnapshot(EnvironmentSnapshot environment);
 
 
     EnvironmentSnapshot get(SnapshotId snapshotId);
