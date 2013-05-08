@@ -1,5 +1,7 @@
-package service;
+package service.history;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -14,7 +16,11 @@ public class EnvironmentNode extends PropertyNode {
     private final Set<EnvironmentNode> subEnvironments;
     private final Set<PropertyNode> applicationNodes;
 
-    public EnvironmentNode(Set<EnvironmentNode> subEnvironments, Set<PropertyNode> applicationNodes, String name, Map<String, String> properties) {
+    @JsonCreator
+    public EnvironmentNode(@JsonProperty("subEnvironments")Set<EnvironmentNode> subEnvironments,
+                           @JsonProperty("applicationNodes")Set<PropertyNode> applicationNodes,
+                           @JsonProperty("name")String name,
+                           @JsonProperty("properties")Map<String, String> properties) {
         super(name, properties);
         this.subEnvironments = subEnvironments;
         this.applicationNodes = applicationNodes;

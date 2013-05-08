@@ -1,5 +1,7 @@
-package service;
+package service.history;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import model.Application;
@@ -10,7 +12,9 @@ public class PropertyNode {
     private final String name;
     private final Map<String, String> properties;
 
-    public PropertyNode(String name, Map<String, String> properties) {
+    @JsonCreator
+    public PropertyNode(@JsonProperty("name")String name,
+                        @JsonProperty("properties")Map<String, String> properties) {
         this.name = name;
         this.properties = properties;
     }

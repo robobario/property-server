@@ -6,12 +6,19 @@ import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import service.history.EnvironmentSnapshotService;
+import service.history.FileSystemEnvironmentSnapshotService;
+
+import java.io.File;
 
 @Configuration
 @EnableWebMvc
 public class Context {
 
     public static final String ENV_NAME = "env";
+
+    private static final String HISTORY_SERVICE_NAME = "historyService";
+
 
     @Bean(autowire = Autowire.BY_NAME, name = ENV_NAME)
     public Environment getEnv() {
@@ -28,5 +35,14 @@ public class Context {
         app2.put("p1", "g");
         app2.put("p5", "${p1}${p2}");
         return rootEnvironment;
+    }
+
+
+    @Bean(autowire = Autowire.BY_NAME, name = HISTORY_SERVICE_NAME)
+    public EnvironmentSnapshotService historyService() {
+        FileSystemEnvironmentSnapshotService service =
+                new FileSystemEnvironmentSnapshotService(new File("/tmp"));
+        service.recordSnapshot(getEnv());
+        return service;
     }
 }

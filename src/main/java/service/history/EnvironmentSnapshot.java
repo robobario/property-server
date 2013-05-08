@@ -1,12 +1,15 @@
-package service;
+package service.history;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import model.Environment;
 
 public class EnvironmentSnapshot {
     private final EnvironmentNode root;
 
-    public EnvironmentSnapshot(EnvironmentNode root) {
+    @JsonCreator
+    public EnvironmentSnapshot(@JsonProperty("root")EnvironmentNode root) {
         this.root = root;
     }
 

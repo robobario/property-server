@@ -18,7 +18,7 @@ dependencies {
   executableWarDeps "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
   compile "org.springframework:spring-web:${springVersion}"
   compile "org.springframework:spring-webmvc:${springVersion}"
-  runtime 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
   compile 'com.google.guava:guava:14.0.1'
   testCompile 'junit:junit:4.11'
   testCompile "org.springframework:spring-test:${springVersion}" 

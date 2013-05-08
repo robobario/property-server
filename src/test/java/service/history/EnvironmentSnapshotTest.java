@@ -1,5 +1,10 @@
-package service;
+package service.history;
 
+import static model.Environment.createRootEnvironment;
+import static org.junit.Assert.assertEquals;
+import static service.history.EnvironmentSnapshot.snapshotOf;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -7,9 +12,7 @@ import model.Application;
 import model.Environment;
 import org.junit.Test;
 
-import static model.Environment.createRootEnvironment;
-import static org.junit.Assert.assertEquals;
-import static service.EnvironmentSnapshot.snapshotOf;
+import java.io.IOException;
 
 public class EnvironmentSnapshotTest {
     @Test
@@ -68,5 +71,15 @@ public class EnvironmentSnapshotTest {
         assertEquals(environment.getName(), "root");
         assertEquals(ImmutableMap.of("a", "b"), onlyElement.getLocalProperties());
     }
+
+    @Test
+    public void testSnapshotSerialization() throws IOException {
+        EnvironmentSnapshot expected = new EnvironmentSnapshot(new EnvironmentNode(ImmutableSet.<EnvironmentNode>of(), ImmutableSet.of(new PropertyNode("app1", ImmutableMap.<String, String>of("a", "b"))), "root", ImmutableMap.<String, String>of()));
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writer().writeValueAsString(expected);
+        Object obj = mapper.reader(EnvironmentSnapshot.class).readValue(json);
+        assertEquals(expected,obj);
+    }
+
 
 }
