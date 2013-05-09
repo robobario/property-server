@@ -33,10 +33,10 @@ public class RestPropertyClient implements PropertyClient {
 
     @Override
     public Object getProperty(String name) {
-        log.info("lookup " + name);
+        log.debug("looking up property named : " + name);
         try {
             String url = propertyServerUrl + "/properties/" + appName + "/" + name;
-            log.info("requesting : " + url);
+            log.debug("requesting : " + url);
             HttpGet request = new HttpGet(url);
             final HttpResponse response = client.execute(request);
             if (response.getStatusLine().getStatusCode() == 200) {
@@ -50,7 +50,7 @@ public class RestPropertyClient implements PropertyClient {
             }
         }
         catch (Exception e) {
-            log.error("error requesting property " + name, e);
+            log.error("error requesting property named :" + name, e);
         }
         return null;
     }

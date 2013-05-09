@@ -26,47 +26,68 @@ public class ApplicationHandler {
     @Resource(name = Context.ENV_NAME)
     EnvironmentService service;
 
+
     @RequestMapping(method = RequestMethod.GET, value = Routes.APP_VIEW)
-    public @ResponseBody ApplicationView viewApplication(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name) {
+    public
+    @ResponseBody
+    ApplicationView viewApplication(HttpServletResponse resp, @PathVariable(Routes.APP_NAME) String name) {
         addAcal(resp);
-        return createApplicationView(service.getCurrentEnvironment().getApplication(name));
+        Environment currentEnvironment = service.getCurrentEnvironment();
+        Application app = getApplicationOrDir(name, currentEnvironment);
+        return createApplicationView(app);
     }
 
 
     @RequestMapping(method = RequestMethod.POST, value = Routes.APP_PUT_PROPERTY)
-    public @ResponseBody
-    ApplicationView addProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name, @RequestBody AddPropRequest request) {
+    public
+    @ResponseBody
+    ApplicationView addProperty(HttpServletResponse resp, @PathVariable(Routes.APP_NAME) String name,
+                                @RequestBody AddPropRequest request) {
         addAcal(resp);
         Environment currentEnvironment = service.getCurrentEnvironment();
-        Application app = currentEnvironment.getApplication(name);
-        app.put(request.getKey(),request.getValue());
+        Application app = getApplicationOrDir(name, currentEnvironment);
+        app.put(request.getKey(), request.getValue());
         service.update(currentEnvironment);
         return ViewCreator.createApplicationView(app);
     }
 
+
+    private Application getApplicationOrDir(String name, Environment currentEnvironment) {
+        Application app = currentEnvironment.getApplication(name);
+        if (app == null) {
+            throw new ResourceNotFoundException();
+        }
+        return app;
+    }
+
+
     @RequestMapping(method = RequestMethod.DELETE, value = Routes.APP_DELETE_PROPERTY)
-    public @ResponseBody
-    ApplicationView removeProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
+    public
+    @ResponseBody
+    ApplicationView removeProperty(HttpServletResponse resp, @PathVariable(Routes.APP_NAME) String name,
+                                   @PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
         addAcal(resp);
         Environment currentEnvironment = service.getCurrentEnvironment();
-        Application app = currentEnvironment.getApplication(name);
+        Application app = getApplicationOrDir(name, currentEnvironment);
         app.remove(propertyKey);
         service.update(currentEnvironment);
         return ViewCreator.createApplicationView(app);
     }
 
-    @RequestMapping(value = "/**",method = RequestMethod.OPTIONS)
+
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
     public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
-        theHttpServletResponse.addHeader("Access-Control-Allow-Headers",
-                "origin, content-type, accept, x-requested-with");
-        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
+        theHttpServletResponse
+                .addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        theHttpServletResponse.addHeader("Access-Control-Max-Age",
+                "60"); // seconds to cache preflight request --> less OPTIONS traffic
         theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         addAcal(theHttpServletResponse);
     }
 
+
     private void addAcal(HttpServletResponse resp) {
         resp.addHeader("Access-Control-Allow-Origin", "*");
     }
-
 
 }

@@ -10,17 +10,13 @@ public class Routes {
 
     public static final String PROPERTY_KEY = "propertyKey";
 
-    public static final String PROPERTY_VALUE = "propertyValue";
-
     private static final String ENV_NAME_TOKEN = "{" + ENV_NAME + "}";
 
     private static final String SUB_ENV_NAME_TOKEN = "{" + SUB_ENV_NAME + "}";
 
     private static final String APP_NAME_TOKEN = "{" + APP_NAME + "}";
 
-    private static final String PROPERTY_KEY_TOKEN = "{" + PROPERTY_KEY + "}";
-
-    private static final String PROPERTY_VALUE_TOKEN = "{" + PROPERTY_VALUE + "}";
+    private static final String PROPERTY_KEY_TOKEN = "{" + PROPERTY_KEY + ":.*}";
 
     public static final String ENVIRONMENT_HANDLER = "/environment";
 
@@ -61,6 +57,17 @@ public class Routes {
 
         public AppRouteBuilder application() {
             return new AppRouteBuilder();
+        }
+
+
+        public PropRouteBuilder property() {
+            return new PropRouteBuilder();
+        }
+    }
+
+    public static class PropRouteBuilder {
+        public String getProp(String appName, String propKey){
+            return PROPERTY_HANDLER + "/" + PROPERTY_GET.replace(APP_NAME_TOKEN, appName).replace(PROPERTY_KEY_TOKEN, propKey);
         }
     }
 

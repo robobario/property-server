@@ -41,11 +41,7 @@ public class Environment extends ChildPropertyContainer{
     }
 
     public Application getApplication(String applicationName){
-        Application application = getAllApplications().get(applicationName);
-        if(application == null){
-            application = createApplication(applicationName);
-        }
-        return application;
+        return getAllApplications().get(applicationName);
     }
 
 

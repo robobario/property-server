@@ -10,3 +10,4 @@ build
 .gitignore
 .idea
 *.DS_Store
+out

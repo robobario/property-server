@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import service.environment.EnvironmentService;
+import service.environment.model.Application;
 
 import java.io.IOException;
 
@@ -25,9 +26,13 @@ public class PropertyHandler {
     @RequestMapping(method = RequestMethod.GET, value = Routes.PROPERTY_GET)
     public
     @ResponseBody
-    String viewEnvironment(HttpServletResponse resp, @PathVariable String appName, @PathVariable String propertyKey) {
+    String viewEnvironment(HttpServletResponse resp, @PathVariable(Routes.APP_NAME) String appName, @PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
         addAcal(resp);
-        return decorate(environmentService.getCurrentEnvironment().getApplication(appName)).get(propertyKey);
+        Application application = environmentService.getCurrentEnvironment().getApplication(appName);
+        if(application == null){
+            throw new ResourceNotFoundException();
+        }
+        return decorate(application).get(propertyKey);
     }
 
 
