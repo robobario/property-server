@@ -2,11 +2,13 @@ package web.application;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
@@ -19,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 import service.environment.model.Environment;
 import web.view.EnvironmentView;
@@ -99,11 +102,18 @@ public class EnvironmentHandlerTest {
         Environment rootEnvironment = Environment.createRootEnvironment();
         rootEnvironment.put("p1", "p2");
         EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
-        this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("root", "p1", "p2")))
-                .andExpect(status().isOk()).andExpect(
+        this.mockMvc.perform(postPropCreateRequest("root", "p1", "p2")).andExpect(status().isOk()).andExpect(
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
     }
+
+
+    private MockHttpServletRequestBuilder postPropCreateRequest(String env, String key, String value)
+            throws JsonProcessingException {
+        return post(Routes.to().environment().addPropertyTo(env)).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(new AddPropRequest(key, value)));
+    }
+
 
     @Test
     @DirtiesContext
@@ -113,13 +123,30 @@ public class EnvironmentHandlerTest {
         sub.put("p1", "p2");
         EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
         this.mockMvc.perform(put(Routes.to().environment().addSubEnvironmentTo("root", "sub")));
-        this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("sub", "p1", "p2")));
+        this.mockMvc.perform(postPropCreateRequest("sub", "p1", "p2"));
         this.mockMvc.perform(get(Routes.to().environment().root()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
     }
 
+
+    @Test
+    @DirtiesContext
+    public void addComplexProp() throws Exception {
+        Environment rootEnvironment = Environment.createRootEnvironment();
+        Environment sub = rootEnvironment.createSubEnvironment("sub");
+        String key = "activemqurl";
+        String value = "tcp://${activemqport}:${activemqport}";
+        sub.put(key, value);
+        EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
+        this.mockMvc.perform(put(Routes.to().environment().addSubEnvironmentTo("root", "sub")));
+        this.mockMvc.perform(postPropCreateRequest("sub", key, value));
+        this.mockMvc.perform(get(Routes.to().environment().root()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(
+                content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
+                .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
+    }
 
 
     @Test
@@ -128,7 +155,7 @@ public class EnvironmentHandlerTest {
         Environment rootEnvironment = Environment.createRootEnvironment();
         rootEnvironment.put("p1", "p2");
         EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
-        this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("root", "p1", "p2")));
+        this.mockMvc.perform(postPropCreateRequest("root", "p1", "p2"));
         this.mockMvc.perform(get(Routes.to().environment().root())).andExpect(status().isOk()).andExpect(
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
@@ -140,7 +167,7 @@ public class EnvironmentHandlerTest {
     public void removeProp() throws Exception {
         Environment rootEnvironment = Environment.createRootEnvironment();
         EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
-        this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("root", "p1", "p2")));
+        this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("root"), new AddPropRequest("p1", "p2")));
         this.mockMvc.perform(delete(Routes.to().environment().removePropertyFrom("root", "p1")))
                 .andExpect(status().isOk()).andExpect(
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))

@@ -4,6 +4,7 @@ import static web.view.ViewCreator.createApplicationView;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,13 +33,13 @@ public class ApplicationHandler {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT, value = Routes.APP_PUT_PROPERTY)
+    @RequestMapping(method = RequestMethod.POST, value = Routes.APP_PUT_PROPERTY)
     public @ResponseBody
-    ApplicationView addProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
+    ApplicationView addProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name, @RequestBody AddPropRequest request) {
         addAcal(resp);
         Environment currentEnvironment = service.getCurrentEnvironment();
         Application app = currentEnvironment.getApplication(name);
-        app.put(propertyKey,propertyValue);
+        app.put(request.getKey(),request.getValue());
         service.update(currentEnvironment);
         return ViewCreator.createApplicationView(app);
     }
@@ -56,7 +57,8 @@ public class ApplicationHandler {
 
     @RequestMapping(value = "/**",method = RequestMethod.OPTIONS)
     public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
-        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        theHttpServletResponse.addHeader("Access-Control-Allow-Headers",
+                "origin, content-type, accept, x-requested-with");
         theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
         theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         addAcal(theHttpServletResponse);

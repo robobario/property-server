@@ -1,6 +1,4 @@
 function doOnLoad() {
-    var root="";
-
     var Environment = function (data) {
         var self = this;
         self.name = ko.observable(data.name);
@@ -22,7 +20,7 @@ function doOnLoad() {
             var name = values[0].value;
             if (typeof name !== undefined && name.length > 0) {
                 $.ajax({
-                    url: root + data.link + "/newSubContainer/" + name,
+                    url: data.link + "/newSubContainer/" + encodeURIComponent(name),
                     type: "PUT",
                     success: update,
                     settings: {
@@ -36,7 +34,7 @@ function doOnLoad() {
             var name = values[0].value;
             if (typeof name !== undefined && name.length > 0) {
                 $.ajax({
-                    url: root + data.link + "/newApplication/" + name,
+                    url: data.link + "/newApplication/" + encodeURIComponent(name),
                     type: "PUT",
                     success: update,
                     settings: {
@@ -53,9 +51,11 @@ function doOnLoad() {
         var propVal = values[1].value;
         if (typeof propKey !== undefined && propKey.length > 0 && typeof propVal !== undefined && propVal.length > 0) {
             $.ajax({
-                url: root + data.link + "/" + propKey + "/" + propVal,
-                type: "PUT",
+                url: data.link,
+                type: "POST",
+                data: JSON.stringify({"key":propKey,"value":propVal}),
                 success: update,
+                contentType: "application/json; charset=UTF-8",
                 settings: {
                     accepts: "application/json"
                 }
@@ -84,7 +84,7 @@ function doOnLoad() {
 
     // Activates knockout.js
     function update(){
-        $.getJSON(root +"/environment", function (env) {
+        $.getJSON("/environment", function (env) {
             var environment = new Environment(env);
             ko.applyBindings(environment);
             console.log(ko.toJSON(environment))

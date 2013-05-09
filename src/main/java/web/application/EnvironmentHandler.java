@@ -4,6 +4,7 @@ import static web.view.ViewCreator.createEnvironmentView;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,12 +56,12 @@ public class EnvironmentHandler {
         return createEnvironmentView(env);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = Routes.ENV_PUT_PROPERTY)
-    public @ResponseBody EnvironmentView addProperty(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
+    @RequestMapping(method = RequestMethod.POST, value = Routes.ENV_PUT_PROPERTY)
+    public @ResponseBody EnvironmentView addProperty(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name, @RequestBody AddPropRequest request ) {
         addAcal(resp);
         Environment rootEnv = service.getCurrentEnvironment();
         Environment env = rootEnv.findEnvironment(name);
-        env.put(propertyKey, propertyValue);
+        env.put(request.getKey(), request.getValue());
         service.update(rootEnv);
         return createEnvironmentView(env);
     }
