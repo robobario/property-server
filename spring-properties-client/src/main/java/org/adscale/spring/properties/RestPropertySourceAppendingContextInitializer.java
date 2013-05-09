@@ -16,11 +16,14 @@ public class RestPropertySourceAppendingContextInitializer
     public void initialize(ConfigurableApplicationContext applicationContext) {
         log.info("registering rest property source appending context initializer");
         ConfigurableEnvironment environment = applicationContext.getEnvironment();
-        String url = environment.getProperty("property.server.url", "http://localhost:8888");
-        String name = environment.getProperty("application.name", "app");
+        String url = environment.getProperty("property.server.url");
+        url = url == null ? "http://localhost:8888" : url;
+
+        String name = environment.getProperty("application.name");
+        name = name == null ? "app" : name;
         RestPropertyClient client = new RestPropertyClient(url, name);
         RestPropertySource propertySource = new RestPropertySource("rest-property-source", client);
-        environment.getPropertySources().addLast(propertySource);
+        environment.getPropertySources().addFirst(propertySource);
         log.info("finished registering rest property source appending context initializer");
     }
 }
