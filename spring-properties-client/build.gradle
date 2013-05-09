@@ -17,3 +17,12 @@ dependencies {
   compile 'org.apache.httpcomponents:httpclient:[4.0,5.0)'
   compile 'com.google.guava:guava:[13.0,15.0)'
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
