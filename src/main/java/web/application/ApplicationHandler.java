@@ -13,7 +13,10 @@ import service.environment.model.Environment;
 import web.view.ApplicationView;
 import web.view.ViewCreator;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(Routes.APPLICATION_HANDLER)
@@ -23,13 +26,16 @@ public class ApplicationHandler {
     EnvironmentService service;
 
     @RequestMapping(method = RequestMethod.GET, value = Routes.APP_VIEW)
-    public @ResponseBody ApplicationView viewApplication(@PathVariable(Routes.APP_NAME) String name) {
+    public @ResponseBody ApplicationView viewApplication(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name) {
+        addAcal(resp);
         return createApplicationView(service.getCurrentEnvironment().getApplication(name));
     }
 
+
     @RequestMapping(method = RequestMethod.PUT, value = Routes.APP_PUT_PROPERTY)
     public @ResponseBody
-    ApplicationView addProperty(@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
+    ApplicationView addProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
+        addAcal(resp);
         Environment currentEnvironment = service.getCurrentEnvironment();
         Application app = currentEnvironment.getApplication(name);
         app.put(propertyKey,propertyValue);
@@ -39,7 +45,8 @@ public class ApplicationHandler {
 
     @RequestMapping(method = RequestMethod.DELETE, value = Routes.APP_DELETE_PROPERTY)
     public @ResponseBody
-    ApplicationView removeProperty(@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
+    ApplicationView removeProperty(HttpServletResponse resp,@PathVariable(Routes.APP_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
+        addAcal(resp);
         Environment currentEnvironment = service.getCurrentEnvironment();
         Application app = currentEnvironment.getApplication(name);
         app.remove(propertyKey);
@@ -47,6 +54,17 @@ public class ApplicationHandler {
         return ViewCreator.createApplicationView(app);
     }
 
+    @RequestMapping(value = "/**",method = RequestMethod.OPTIONS)
+    public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
+        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
+        theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        addAcal(theHttpServletResponse);
+    }
+
+    private void addAcal(HttpServletResponse resp) {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+    }
 
 
 }

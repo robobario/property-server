@@ -80,9 +80,9 @@ public class EnvironmentNode extends PropertyNode {
         for (EnvironmentNode envNode : source.getSubEnvironments()) {
             Environment subEnvironment = target.createSubEnvironment(envNode.getName());
             copyTo(envNode, subEnvironment);
-            for (Map.Entry<String, String> propertyEntry : envNode.getProperties().entrySet()) {
-                subEnvironment.put(propertyEntry.getKey(), propertyEntry.getValue());
-            }
+        }
+        for (Map.Entry<String, String> propertyEntry : source.getProperties().entrySet()) {
+            target.put(propertyEntry.getKey(), propertyEntry.getValue());
         }
         return target;
     }

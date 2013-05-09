@@ -11,7 +11,10 @@ import service.environment.EnvironmentService;
 import service.environment.model.Environment;
 import web.view.EnvironmentView;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(Routes.ENVIRONMENT_HANDLER)
@@ -21,46 +24,68 @@ public class EnvironmentHandler {
     EnvironmentService service;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody EnvironmentView viewRoot() {
+    public @ResponseBody EnvironmentView viewRoot(HttpServletResponse resp) {
+        addAcal(resp);
         return createEnvironmentView(service.getCurrentEnvironment());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = Routes.ENV_VIEW)
-    public @ResponseBody EnvironmentView viewEnvironment(@PathVariable(Routes.ENV_NAME) String name) {
+    public @ResponseBody EnvironmentView viewEnvironment(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name) {
+        addAcal(resp);
         return createEnvironmentView(service.getCurrentEnvironment().findEnvironment(name));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = Routes.ENV_CREATE_SUBENV)
-    public @ResponseBody EnvironmentView addSubContainer(@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.SUB_ENV_NAME) String subName) {
-        Environment env = service.getCurrentEnvironment().findEnvironment(name);
+    public @ResponseBody EnvironmentView addSubContainer(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.SUB_ENV_NAME) String subName) {
+        addAcal(resp);
+        Environment rootEnv = service.getCurrentEnvironment();
+        Environment env = rootEnv.findEnvironment(name);
         env.createSubEnvironment(subName);
-        service.update(env);
+        service.update(rootEnv);
         return createEnvironmentView(env);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = Routes.ENV_CREATE_APP)
-    public @ResponseBody EnvironmentView addApplication(@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.APP_NAME) String appName) {
-        Environment env = service.getCurrentEnvironment().findEnvironment(name);
+    public @ResponseBody EnvironmentView addApplication(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.APP_NAME) String appName) {
+        addAcal(resp);
+        Environment rootEnv = service.getCurrentEnvironment();
+        Environment env = rootEnv.findEnvironment(name);
         env.createApplication(appName);
-        service.update(env);
+        service.update(rootEnv);
         return createEnvironmentView(env);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = Routes.ENV_PUT_PROPERTY)
-    public @ResponseBody EnvironmentView addProperty(@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
-        Environment env = service.getCurrentEnvironment().findEnvironment(name);
+    public @ResponseBody EnvironmentView addProperty(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey,@PathVariable(Routes.PROPERTY_VALUE) String propertyValue ) {
+        addAcal(resp);
+        Environment rootEnv = service.getCurrentEnvironment();
+        Environment env = rootEnv.findEnvironment(name);
         env.put(propertyKey, propertyValue);
-        service.update(env);
+        service.update(rootEnv);
         return createEnvironmentView(env);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = Routes.ENV_DELETE_PROPERTY)
-    public @ResponseBody EnvironmentView remove(@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
-        Environment env = service.getCurrentEnvironment().findEnvironment(name);
+    public @ResponseBody EnvironmentView remove(HttpServletResponse resp,@PathVariable(Routes.ENV_NAME) String name,@PathVariable(Routes.PROPERTY_KEY) String propertyKey) {
+        addAcal(resp);
+        Environment rootEnv = service.getCurrentEnvironment();
+        Environment env = rootEnv.findEnvironment(name);
         env.remove(propertyKey);
         service.update(env);
-        return createEnvironmentView(env);
+        return createEnvironmentView(rootEnv);
     }
 
+    @RequestMapping(value = "/**",method = RequestMethod.OPTIONS)
+    public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
+        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60"); // seconds to cache preflight request --> less OPTIONS traffic
+        theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        addAcal(theHttpServletResponse);
+    }
+
+
+    private void addAcal(HttpServletResponse theHttpServletResponse) {
+        theHttpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+    }
 
 }
