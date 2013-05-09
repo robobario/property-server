@@ -1,0 +1,19 @@
+apply plugin : 'java'
+apply plugin: 'maven'
+
+version = '1.0-SNAPSHOT'
+group = 'org.adscale.spring'
+
+repositories {
+  mavenCentral()
+}
+
+def springVersion = '[3.1.1.RELEASE,4.0.0.RELEASE)'
+
+dependencies {
+  compile "org.springframework:spring-core:${springVersion}"
+  compile "org.springframework:spring-context:${springVersion}"
+  compile "org.slf4j:slf4j-api:[1.5.0,2.0.0)"
+  compile 'org.apache.httpcomponents:httpclient:[4.0,5.0)'
+  compile 'com.google.guava:guava:[13.0,15.0)'
+}

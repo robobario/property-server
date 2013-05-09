@@ -1,1 +1,1 @@
-include 'server', 'spring-client'
+include 'server', 'spring-properties-client'
