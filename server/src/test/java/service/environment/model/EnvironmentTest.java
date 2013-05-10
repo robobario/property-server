@@ -79,6 +79,15 @@ public class EnvironmentTest {
 
 
     @Test
+    public void testPropertyOverwrite() {
+        Environment root = Environment.createRootEnvironment();
+        root.put(KEY, "a");
+        root.put(KEY, "b");
+        assertEquals("b", root.get(KEY));
+    }
+
+
+    @Test
     public void testGetLocalPropertiesDoesNotIncludeParentProperties() {
         Environment root = Environment.createRootEnvironment();
         root.put(KEY, "a");

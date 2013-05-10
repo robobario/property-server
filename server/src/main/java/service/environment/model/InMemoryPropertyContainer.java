@@ -28,7 +28,10 @@ public class InMemoryPropertyContainer implements PropertyContainer{
 
     @Override
     public void put(String propertyKey, String propertyValue) {
-        properties = ImmutableMap.<String, String>builder().putAll(properties).put(propertyKey,propertyValue).build();
+        Map<String,String> temp = Maps.newHashMap();
+        temp.putAll(properties);
+        temp.put(propertyKey, propertyValue);
+        properties = ImmutableMap.copyOf(temp);
     }
 
 
