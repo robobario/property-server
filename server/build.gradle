@@ -20,6 +20,8 @@ dependencies {
   compile "org.springframework:spring-webmvc:${springVersion}"
   compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
   compile 'com.google.guava:guava:14.0.1'
+  executableWarDeps 'commons-cli:commons-cli:1.2'
+  compile 'commons-cli:commons-cli:1.2'
   runtime 'org.slf4j:jcl-over-slf4j:1.7.5'
   runtime 'ch.qos.logback:logback-classic:1.0.12'
   testCompile 'junit:junit:4.11'
