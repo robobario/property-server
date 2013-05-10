@@ -104,6 +104,11 @@ public class Routes {
             return ENVIRONMENT_HANDLER + "/" + ENV_DELETE_PROPERTY.replace(ENV_NAME_TOKEN, envName)
                     .replace(PROPERTY_KEY_TOKEN, propertyKey);
         }
+
+
+        public String updateSnapshot() {
+            return ENVIRONMENT_HANDLER;
+        }
     }
 
     public static class AppRouteBuilder {

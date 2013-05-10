@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 import service.environment.model.Environment;
+import service.history.model.EnvironmentSnapshot;
 import web.view.EnvironmentView;
 import web.view.ViewCreator;
 
@@ -169,6 +170,20 @@ public class EnvironmentHandlerTest {
         EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
         this.mockMvc.perform(put(Routes.to().environment().addPropertyTo("root"), new AddPropRequest("p1", "p2")));
         this.mockMvc.perform(delete(Routes.to().environment().removePropertyFrom("root", "p1")))
+                .andExpect(status().isOk()).andExpect(
+                content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
+                .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
+    }
+
+
+    @Test
+    @DirtiesContext
+    public void postNewSnapshot() throws Exception {
+        Environment rootEnvironment = Environment.createRootEnvironment();
+        rootEnvironment.put("a", "b");
+        EnvironmentView environmentView = ViewCreator.createEnvironmentView(rootEnvironment);
+        this.mockMvc.perform(post(Routes.to().environment().updateSnapshot()).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(EnvironmentSnapshot.snapshotOf(rootEnvironment))))
                 .andExpect(status().isOk()).andExpect(
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));

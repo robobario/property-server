@@ -26,6 +26,8 @@ public class Context {
 
     private static final String ROOT_DIR_PROP = "#{systemProperties['" + ROOT_DIR + "']}";
 
+    public static final String HISTORY_SERVICE_NAME = "history";
+
     @Value(ROOT_DIR_PROP)
     private String root;
 
@@ -35,7 +37,7 @@ public class Context {
         return new SnapshottingEnvironmentService(historyService());
     }
 
-
+    @Bean(autowire = Autowire.BY_NAME, name = HISTORY_SERVICE_NAME)
     public EnvironmentSnapshotService historyService() {
         if (Strings.isNullOrEmpty(root)) {
             return new FileSystemEnvironmentSnapshotService(Files.createTempDir());
