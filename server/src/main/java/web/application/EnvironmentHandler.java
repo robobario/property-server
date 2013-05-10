@@ -120,8 +120,7 @@ public class EnvironmentHandler {
     public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
         theHttpServletResponse
                 .addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
-        theHttpServletResponse.addHeader("Access-Control-Max-Age",
-                "60"); // seconds to cache preflight request --> less OPTIONS traffic
+        theHttpServletResponse.addHeader("Access-Control-Max-Age", "60");
         theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         addAcal(theHttpServletResponse);
     }
