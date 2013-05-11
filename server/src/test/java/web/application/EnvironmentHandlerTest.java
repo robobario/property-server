@@ -83,6 +83,11 @@ public class EnvironmentHandlerTest {
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
     }
 
+    @Test
+    public void viewNonExistent() throws Exception {
+        this.mockMvc.perform(get(Routes.to().environment().environmentDetails(SUB_ENV_NAME))).andExpect(status().isNotFound());
+    }
+
 
     @Test
     @DirtiesContext
@@ -107,6 +112,12 @@ public class EnvironmentHandlerTest {
                 content().contentType(new MediaType(MediaType.APPLICATION_JSON, ImmutableMap.of("charset", "UTF-8"))))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(environmentView)));
     }
+
+    @Test
+    public void addPropNonExist() throws Exception {
+        this.mockMvc.perform(postPropCreateRequest("sub", "p1", "p2")).andExpect(status().isNotFound());
+    }
+
 
 
     private MockHttpServletRequestBuilder postPropCreateRequest(String env, String key, String value)

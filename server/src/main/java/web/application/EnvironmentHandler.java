@@ -54,7 +54,8 @@ public class EnvironmentHandler {
     @ResponseBody
     EnvironmentView viewEnvironment(HttpServletResponse resp, @PathVariable(Routes.ENV_NAME) String name) {
         addAcal(resp);
-        return createEnvironmentView(service.getCurrentEnvironment().findEnvironment(name));
+        Environment environment = getEnvironmentOrDie(service.getCurrentEnvironment(), name);
+        return createEnvironmentView(environment);
     }
 
 
@@ -91,11 +92,10 @@ public class EnvironmentHandler {
     @RequestMapping(method = RequestMethod.POST, value = Routes.ENV_PUT_PROPERTY)
     public
     @ResponseBody
-    EnvironmentView addProperty(HttpServletResponse resp, @PathVariable(Routes.ENV_NAME) String name,
-                                @RequestBody AddPropRequest request) {
+    EnvironmentView addProperty(HttpServletResponse resp, @PathVariable(Routes.ENV_NAME) String name, @RequestBody AddPropRequest request) {
         addAcal(resp);
         Environment rootEnv = service.getCurrentEnvironment();
-        Environment env = rootEnv.findEnvironment(name);
+        Environment env = getEnvironmentOrDie(rootEnv, name);
         env.put(request.getKey(), request.getValue());
         service.update(rootEnv);
         return createEnvironmentView(env);
@@ -118,8 +118,7 @@ public class EnvironmentHandler {
 
     @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
     public void commonOptions(HttpServletResponse theHttpServletResponse) throws IOException {
-        theHttpServletResponse
-                .addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        theHttpServletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
         theHttpServletResponse.addHeader("Access-Control-Max-Age", "60");
         theHttpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         addAcal(theHttpServletResponse);
@@ -137,6 +136,15 @@ public class EnvironmentHandler {
         if (rootEnv.findEnvironment(subName) != null) {
             throw new ContainerUniquenessConstraintException();
         }
+    }
+
+
+    private Environment getEnvironmentOrDie(Environment rootEnv, String name) {
+        Environment environment = rootEnv.findEnvironment(name);
+        if (environment == null) {
+            throw new ResourceNotFoundException();
+        }
+        return environment;
     }
 
 
