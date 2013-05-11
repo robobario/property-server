@@ -24,18 +24,18 @@
         <h4 data-bind="text: name"></h4>
         <form data-bind="submit: addSubEnv" class="form-inline">
             <input type="text" name="name" class="input-small" placeholder="name">
-            <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i>| subEnv
+            <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i>| subEnv
             </button>
         </form>
         <form data-bind="submit: addApp" class="form-inline">
             <input type="text" name="name" class="input-small" placeholder="name">
-            <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i>| application
+            <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i>| application
             </button>
         </form>
         <form data-bind="submit: addProp" class="form-inline">
             <input type="text" name="key" class="input-small" placeholder="key">
             <input type="text" name="value" class="input-small" placeholder="value">
-            <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i></button>
+            <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i></button>
         </form>
         <div data-bind="template: { name: 'propertiesListTemplate', data: properties() }"></div>
         <div data-bind="if: subEnvironments().length > 0">
