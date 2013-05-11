@@ -22,8 +22,6 @@
 <script type="text/ko" id="environmentTemplate">
     <div class="env well">
         <h4 data-bind="text: name"></h4>
-
-
         <form data-bind="submit: addSubEnv" class="form-inline">
             <input type="text" name="name" class="input-small" placeholder="name">
             <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i>| subEnv
@@ -39,23 +37,7 @@
             <input type="text" name="value" class="input-small" placeholder="value">
             <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i></button>
         </form>
-        <div data-bind="if: properties().length > 0">
-            <h5>properties</h5>
-            <table class="table table-bordered table-condensed">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                    <th>derived value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- ko foreach: { data: properties, as: 'prop' } -->
-                <tr data-bind="css: { success: !prop.inherited, info: prop.inherited }, template: { name: 'propertiesTemplate', data: prop }"></tr>
-                <!-- /ko -->
-                </tbody>
-            </table>
-        </div>
+        <div data-bind="template: { name: 'propertiesListTemplate', data: properties() }"></div>
         <div data-bind="if: subEnvironments().length > 0">
             <h5>subEnvironments</h5>
             <!-- ko foreach: { data: subEnvironments, as: 'subEnv' } -->
@@ -80,25 +62,30 @@
             <input type="text" name="value" class="input-small" placeholder="value">
             <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i></button>
         </form>
-        <div data-bind="if: properties().length > 0">
-            <h5>properties</h5>
-            <table class="table table-bordered table-condensed">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                    <th>derived value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- ko foreach: { data: properties, as: 'prop' } -->
-                <tr data-bind="css: { success: !prop.inherited, info: prop.inherited }, template: { name: 'propertiesTemplate', data: prop }"></tr>
-                <!-- /ko -->
-                </tbody>
-            </table>
-        </div>
+        <div data-bind="template: { name: 'propertiesListTemplate', data: properties() }"></div>
     </div>
 </script>
+
+<script type="text/ko" id="propertiesListTemplate">
+    <div data-bind="if: length > 0">
+        <h5>properties</h5>
+        <table class="table table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>key</th>
+                <th>value</th>
+                <th>derived value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- ko foreach: { data : $data, as: 'prop' } -->
+            <tr data-bind="css: { success: !prop.inherited, info: prop.inherited }, template: { name: 'propertiesTemplate', data: prop }"></tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+</script>
+
 
 <script type="text/ko" id="propertiesTemplate">
     <td data-bind="text: key"></td>
