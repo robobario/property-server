@@ -1,18 +1,51 @@
 function doOnLoad() {
+    window.computed = 0;
     var host = ""
-    var Environment = function (data) {
+    var PropertiesApplication = function(data) {
+       var self = this;
+       self.searchProp = ko.observable("");
+       self.searchEnv = ko.observable("");
+       self.searchApp = ko.observable("");
+       self.search = ko.computed(function(){
+           var propRegexp = new RegExp(".*"+self.searchProp()+".*","i");
+           var envRegexp = new RegExp(".*"+self.searchEnv()+".*","i");
+           var appRegexp = new RegExp(".*"+self.searchApp()+".*","i");
+           return {
+               matchEnv: function(name){
+                   return typeof name !== "undefined" && name.match(envRegexp);
+               },
+               matchApp: function(name){
+                   return typeof name !== "undefined" && name.match(appRegexp);
+               },
+               matchProp: function(key, value, derivedValue){
+                   return typeof name !== "undefined" && key.match(propRegexp) ||value.match(propRegexp) ||derivedValue.match(propRegexp) ;
+               }
+           };
+       });
+       self.environment = ko.observable(new Environment(data,self.search, ""));
+       self.update = function(env){
+            self.environment(new Environment(env,self.search, ""));
+       };
+    }
+
+    var Environment = function (data, search, breadcrumb) {
         var self = this;
+        self.search = search;
         self.name = ko.observable(data.name);
+        self.breadCrumbs = ko.computed(function(){return breadcrumb + self.name()}, self);
         self.properties = ko.observable(data.properties);
         self.subEnvironments = ko.observableArray(ko.utils.arrayMap(data.subEnvironmentViews, function (s) {
-            return new Environment(s);
+            return new Environment(s,self.search, self.breadCrumbs() + " | ");
         }));
         self.applications = ko.observableArray(ko.utils.arrayMap(data.applications, function (a) {
-            return new Application(a);
+            return new Application(a,self.search, self.breadCrumbs() + " | ");
         }));
         self.properties = ko.observableArray(ko.utils.arrayMap(data.properties, function (propertyObj) {
-            return new Property(propertyObj)
+            return new Property(propertyObj,self.search)
         }));
+        self.visible = ko.computed(function(){
+            return self.search().matchEnv(self.name())
+        },self);
         self.addProp = function(formElement) {
             addProp(formElement, data);
         };
@@ -64,20 +97,26 @@ function doOnLoad() {
         }
     }
 
-    var Application = function (data) {
+    var Application = function (data, search, breadcrumbs) {
         var self = this;
+        self.search = search;
         self.name = ko.observable(data.name);
+        self.breadCrumbs = ko.computed(function(){return breadcrumbs + self.name()},self);
         self.properties = ko.observableArray(ko.utils.arrayMap(data.properties, function (propertyObj) {
-            return new Property(propertyObj)
+            return new Property(propertyObj, self.search)
         }));
         self.addProp = function(formElement) {
             addProp(formElement, data);
-        }
+        };
+        self.visible = ko.computed(function(){
+            return self.search().matchApp(self.name())
+        },self);
     };
 
-    var Property = function (prop) {
+    var Property = function (prop, search) {
         var self = this;
         self.key = prop.key;
+        self.search = search;
         self.value = prop.value;
         self.inherited = prop.inherited;
         self.derivedValue = prop.derivedValue;
@@ -85,6 +124,9 @@ function doOnLoad() {
         self.shouldShowDelete = function(){
             return !self.inherited
         };
+        self.visible = ko.computed(function(){
+            return self.search().matchProp(self.key, self.value, self.derivedValue)
+        },self);
         self.doDelete = function(){
             $.ajax({
                 url: host +  self.link,
@@ -97,13 +139,14 @@ function doOnLoad() {
         };
     };
 
+    var application = new PropertiesApplication({});
     // Activates knockout.js
     function update(){
         $.getJSON(host + "/environment", function (env) {
-            var environment = new Environment(env);
-            ko.applyBindings(environment);
+            application.update(env);
             window.latest = env;
         });
     }
+    ko.applyBindings(application);
     update();
 }

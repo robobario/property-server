@@ -111,7 +111,7 @@ public class EnvironmentHandler {
         Environment rootEnv = service.getCurrentEnvironment();
         Environment env = rootEnv.findEnvironment(name);
         env.remove(propertyKey);
-        service.update(env);
+        service.update(rootEnv);
         return createEnvironmentView(rootEnv);
     }
 

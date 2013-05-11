@@ -16,35 +16,38 @@
 <body onload="doOnLoad()">
 <div class="container-fluid">
     <div class="row-fluid">
-        <div data-bind="template: 'environmentTemplate'"></div>
+        <p>Filter Props: <input data-bind="value: searchProp" /> Filter Applications: <input data-bind="value: searchApp" /> Filter Environments: <input data-bind="value: searchEnv" /></p>
+    </div>
+    <div class="row-fluid">
+        <div data-bind="template: { name: 'environmentTemplate', data: environment() }"></div>
     </div>
 </div>
 <script type="text/ko" id="environmentTemplate">
-    <div class="env well">
-        <h4 data-bind="text: name"></h4>
-        <form data-bind="submit: addSubEnv" class="form-inline">
+    <div data-bind="css: { 'env well' : visible }"class="env well">
+        <h4 data-bind="visible:visible, text: breadCrumbs()"></h4>
+        <form data-bind="visible:visible, submit: addSubEnv" class="form-inline">
             <input type="text" name="name" class="input-small" placeholder="name">
             <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i>| subEnv
             </button>
         </form>
-        <form data-bind="submit: addApp" class="form-inline">
+        <form data-bind="visible:visible, submit: addApp" class="form-inline">
             <input type="text" name="name" class="input-small" placeholder="name">
             <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i>| application
             </button>
         </form>
-        <form data-bind="submit: addProp" class="form-inline">
+        <form data-bind="visible:visible, submit: addProp" class="form-inline">
             <input type="text" name="key" class="input-small" placeholder="key">
             <input type="text" name="value" class="input-small" placeholder="value">
             <button type="submit" class="btn btn-success btn-mini"><i class="icon-white icon-plus"></i></button>
         </form>
-        <div data-bind="template: { name: 'propertiesListTemplate', data: properties() }"></div>
+        <div data-bind="visible:visible, template: { name: 'propertiesListTemplate', data: properties() }"></div>
         <div data-bind="if: subEnvironments().length > 0">
-            <h5>subEnvironments</h5>
+            <h5 data-bind="visible: visible">subEnvironments</h5>
             <!-- ko foreach: { data: subEnvironments, as: 'subEnv' } -->
             <div data-bind="template: { name: 'environmentTemplate', data: subEnv }"></div>
             <!-- /ko -->
         </div>
-        <div data-bind="if: applications().length > 0">
+        <div data-bind="visible:visible, if: applications().length > 0">
             <h5>applications</h5>
             <!-- ko foreach: { data: applications, as: 'app' } -->
             <div data-bind="template: { name: 'applicationTemplate', data: app }"></div>
@@ -54,9 +57,8 @@
 </script>
 
 <script type="text/ko" id="applicationTemplate">
-    <div class="env well">
-        name : <span data-bind="text: name"></span>
-
+    <div data-bind="visible: visible" class="env well">
+        <h4 data-bind="text: breadCrumbs()"></h4>
         <form data-bind="submit: addProp" class="form-inline">
             <input type="text" name="key" class="input-small" placeholder="key">
             <input type="text" name="value" class="input-small" placeholder="value">
@@ -79,7 +81,7 @@
             </thead>
             <tbody>
             <!-- ko foreach: { data : $data, as: 'prop' } -->
-            <tr data-bind="css: { success: !prop.inherited, info: prop.inherited }, template: { name: 'propertiesTemplate', data: prop }"></tr>
+            <tr data-bind="visible: visible, css: { success: !prop.inherited, info: prop.inherited }, template: { name: 'propertiesTemplate', data: prop }"></tr>
             <!-- /ko -->
             </tbody>
         </table>
