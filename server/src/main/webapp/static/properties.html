@@ -39,8 +39,7 @@
             <input type="text" name="value" class="input-small" placeholder="value">
             <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i></button>
         </form>
-        <!-- ko if: properties().length > 0 -->
-        <div>
+        <div data-bind="if: properties().length > 0">
             <h5>properties</h5>
             <table class="table table-bordered table-condensed">
                 <thead>
@@ -57,23 +56,18 @@
                 </tbody>
             </table>
         </div>
-        <!-- /ko -->
-        <!-- ko if: subEnvironments().length > 0 -->
-        <div>
+        <div data-bind="if: subEnvironments().length > 0">
             <h5>subEnvironments</h5>
             <!-- ko foreach: { data: subEnvironments, as: 'subEnv' } -->
             <div data-bind="template: { name: 'environmentTemplate', data: subEnv }"></div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->​
-        <!-- ko if: applications().length > 0 -->
-        <div>
+        <div data-bind="if: applications().length > 0">
             <h5>applications</h5>
             <!-- ko foreach: { data: applications, as: 'app' } -->
             <div data-bind="template: { name: 'applicationTemplate', data: app }"></div>
             <!-- /ko -->
         </div>
-        <!-- /ko -->
     </div>
 </script>
 
@@ -86,8 +80,7 @@
             <input type="text" name="value" class="input-small" placeholder="value">
             <button type="submit" class="btn btn-success btn-small"><i class="icon-white icon-plus"></i></button>
         </form>
-        <!-- ko if: properties().length > 0 -->
-        <div>
+        <div data-bind="if: properties().length > 0">
             <h5>properties</h5>
             <table class="table table-bordered table-condensed">
                 <thead>
@@ -104,7 +97,6 @@
                 </tbody>
             </table>
         </div>
-        <!-- /ko -->
     </div>
 </script>
 
@@ -112,6 +104,9 @@
     <td data-bind="text: key"></td>
     <td data-bind="text: value"></td>
     <td data-bind="text: derivedValue"></td>
+    <td>
+        <a class="btn btn-danger btn-mini" data-bind="click: doDelete, visible: shouldShowDelete()"><i class="icon-white icon-minus"></i></a>
+    </td>
 </script>
 
 

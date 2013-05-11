@@ -1,4 +1,5 @@
 function doOnLoad() {
+    var host = ""
     var Environment = function (data) {
         var self = this;
         self.name = ko.observable(data.name);
@@ -9,9 +10,9 @@ function doOnLoad() {
         self.applications = ko.observableArray(ko.utils.arrayMap(data.applications, function (a) {
             return new Application(a);
         }));
-        self.properties = ko.observableArray(data.properties, function (propertyObj) {
-            return new Property(propertyObj.key, propertyObj.value, propertyObj.inherited, propertyObj.derivedValue)
-        });
+        self.properties = ko.observableArray(ko.utils.arrayMap(data.properties, function (propertyObj) {
+            return new Property(propertyObj)
+        }));
         self.addProp = function(formElement) {
             addProp(formElement, data);
         };
@@ -20,7 +21,7 @@ function doOnLoad() {
             var name = values[0].value;
             if (typeof name !== undefined && name.length > 0) {
                 $.ajax({
-                    url: data.link + "/newSubContainer/" + encodeURIComponent(name),
+                    url: host + data.link + "/newSubContainer/" + encodeURIComponent(name),
                     type: "PUT",
                     success: update,
                     settings: {
@@ -34,7 +35,7 @@ function doOnLoad() {
             var name = values[0].value;
             if (typeof name !== undefined && name.length > 0) {
                 $.ajax({
-                    url: data.link + "/newApplication/" + encodeURIComponent(name),
+                    url: host + data.link + "/newApplication/" + encodeURIComponent(name),
                     type: "PUT",
                     success: update,
                     settings: {
@@ -51,7 +52,7 @@ function doOnLoad() {
         var propVal = values[1].value;
         if (typeof propKey !== undefined && propKey.length > 0 && typeof propVal !== undefined && propVal.length > 0) {
             $.ajax({
-                url: data.link,
+                url: host + data.link,
                 type: "POST",
                 data: JSON.stringify({"key":propKey,"value":propVal}),
                 success: update,
@@ -66,28 +67,42 @@ function doOnLoad() {
     var Application = function (data) {
         var self = this;
         self.name = ko.observable(data.name);
-        self.properties = ko.observableArray(data.properties, function (propertyObj) {
-            return new Property(propertyObj.key, propertyObj.value, propertyObj.inherited, propertyObj.derivedValue)
-        });
+        self.properties = ko.observableArray(ko.utils.arrayMap(data.properties, function (propertyObj) {
+            return new Property(propertyObj)
+        }));
         self.addProp = function(formElement) {
             addProp(formElement, data);
         }
     };
 
-    var Property = function (key, value, inherited, derivedValue) {
+    var Property = function (prop) {
         var self = this;
-        self.key = ko.observable(key);
-        self.value = ko.observable(value);
-        self.inherited = ko.observable(inherited);
-        self.derivedValue = ko.observable(derivedValue);
+        self.key = prop.key;
+        self.value = prop.value;
+        self.inherited = prop.inherited;
+        self.derivedValue = prop.derivedValue;
+        self.link = prop.link;
+        self.shouldShowDelete = function(){
+            return !self.inherited
+        };
+        self.doDelete = function(){
+            $.ajax({
+                url: host +  self.link,
+                type: "DELETE",
+                success: update,
+                settings: {
+                    accepts: "application/json"
+                }
+            })
+        };
     };
 
     // Activates knockout.js
     function update(){
-        $.getJSON("/environment", function (env) {
+        $.getJSON(host + "/environment", function (env) {
             var environment = new Environment(env);
             ko.applyBindings(environment);
-            console.log(ko.toJSON(environment))
+            window.latest = env;
         });
     }
     update();

@@ -1,11 +1,11 @@
 package web.view;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.common.collect.ImmutableList;
+import org.junit.Test;
 import service.environment.model.Application;
 import service.environment.model.Environment;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class ViewCreatorTest {
 
@@ -22,7 +22,7 @@ public class ViewCreatorTest {
         rootEnvironment.put("p1","a");
         rootEnvironment.put("p2","b");
         EnvironmentView view = ViewCreator.createEnvironmentView(rootEnvironment);
-        assertEquals(ImmutableList.of(PropertyView.local("p1","a","a"),PropertyView.local("p2","b","b")), view.getProperties());
+        assertEquals(ImmutableList.of(PropertyView.local("p1","a","a", view),PropertyView.local("p2","b","b", view)), view.getProperties());
     }
 
     @Test
@@ -31,7 +31,7 @@ public class ViewCreatorTest {
         rootEnvironment.put("p1","a");
         rootEnvironment.put("p2","${p1}");
         EnvironmentView view = ViewCreator.createEnvironmentView(rootEnvironment);
-        assertEquals(ImmutableList.of(PropertyView.local("p1","a","a"),PropertyView.local("p2","${p1}","a")), view.getProperties());
+        assertEquals(ImmutableList.of(PropertyView.local("p1","a","a", view),PropertyView.local("p2","${p1}","a", view)), view.getProperties());
     }
 
 

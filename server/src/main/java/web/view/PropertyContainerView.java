@@ -7,7 +7,7 @@ import com.google.common.collect.Ordering;
 import java.util.List;
 import java.util.Set;
 
-public class PropertyContainerView {
+public abstract class PropertyContainerView {
     protected Set<PropertyView> properties = ImmutableSet.of();
     protected String name;
 
@@ -29,7 +29,7 @@ public class PropertyContainerView {
     }
 
     public void addLocalProp(String key, String value, String derivedValue) {
-        addProp(PropertyView.local(key, value, derivedValue));
+        addProp(PropertyView.local(key, value, derivedValue,this));
     }
 
     public void addInheritedProp(String key, String value, String derivedValue) {
@@ -39,4 +39,7 @@ public class PropertyContainerView {
     private void addProp(PropertyView propertyView) {
         properties = ImmutableSet.<PropertyView>builder().addAll(properties).add(propertyView).build();
     }
+
+
+    public abstract String getLink();
 }

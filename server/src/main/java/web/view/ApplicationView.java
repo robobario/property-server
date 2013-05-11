@@ -34,7 +34,10 @@ public class ApplicationView extends PropertyContainerView{
         return Objects.toStringHelper(this.getClass()).add("name", name).add("properties", properties).toString();
     }
 
+    @Override
     public String getLink(){
         return Routes.to().application().applicationDetails(getName());
     }
+
+
 }

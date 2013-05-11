@@ -7,20 +7,23 @@ public class PropertyView {
     private String key;
     private String derivedValue;
     private String value;
+    private String link;
 
-    private PropertyView(boolean isInherited, String key, String value, String derivedValue) {
+
+    private PropertyView(boolean isInherited, String key, String value, String derivedValue, String link) {
         inherited = isInherited;
         this.key = key;
         this.derivedValue = derivedValue;
         this.value = value;
+        this.link = link;
     }
 
     public static PropertyView inherited(String key, String value, String derivedValue) {
-        return new PropertyView(true, key, value, derivedValue);
+        return new PropertyView(true, key, value, derivedValue, null);
     }
 
-    public static PropertyView local(String key, String value, String derivedValue) {
-        return new PropertyView(false, key, value, derivedValue);
+    public static PropertyView local(String key, String value, String derivedValue, PropertyContainerView parent) {
+        return new PropertyView(false, key, value, derivedValue, parent.getLink());
     }
 
     @Override
@@ -60,5 +63,9 @@ public class PropertyView {
 
     public boolean isInherited() {
         return inherited;
+    }
+
+    public String getLink() {
+        return link == null ? null : link + "/" + key;
     }
 }

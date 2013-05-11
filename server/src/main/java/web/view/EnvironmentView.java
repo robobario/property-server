@@ -1,10 +1,10 @@
 package web.view;
 
-import web.application.Routes;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
+import web.application.Routes;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +15,12 @@ public class EnvironmentView extends PropertyContainerView{
 
     private EnvironmentView(String name) {
         super(name);
+    }
+
+
+    @Override
+    public String getLink() {
+        return Routes.to().environment().environmentDetails(getName());
     }
 
     public static EnvironmentView create(String name){
@@ -72,7 +78,4 @@ public class EnvironmentView extends PropertyContainerView{
         return Objects.toStringHelper(this.getClass()).add("applications", applications).add("name",name).add("subEnvironments", subEnvironments).add("properties", properties).toString();
     }
 
-    public String getLink(){
-        return Routes.to().environment().environmentDetails(getName());
-    }
 }
