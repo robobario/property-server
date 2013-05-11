@@ -7,9 +7,9 @@ function doOnLoad() {
        self.searchEnv = ko.observable("");
        self.searchApp = ko.observable("");
        self.search = ko.computed(function(){
-           var propRegexp = new RegExp(".*"+self.searchProp()+".*","i");
-           var envRegexp = new RegExp(".*"+self.searchEnv()+".*","i");
-           var appRegexp = new RegExp(".*"+self.searchApp()+".*","i");
+           var propRegexp = new RegExp(".*"+escapeRegExp(self.searchProp())+".*","i");
+           var envRegexp = new RegExp(".*"+escapeRegExp(self.searchEnv())+".*","i");
+           var appRegexp = new RegExp(".*"+escapeRegExp(self.searchApp())+".*","i");
            return {
                matchEnv: function(name){
                    return typeof name !== "undefined" && name.match(envRegexp);
@@ -149,4 +149,8 @@ function doOnLoad() {
     }
     ko.applyBindings(application);
     update();
+
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
 }
