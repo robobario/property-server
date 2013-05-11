@@ -14,10 +14,16 @@
 </head>
 
 <body onload="doOnLoad()">
+<div class="navbar navbar-fixed-top header">
+      <div class="navbar-inner">
+          <div class="container">
+              <form class="form-inline header-form">
+                  <label>Filter Props: <input data-bind="value: searchProp" /></label> <label>Filter Applications: <input data-bind="value: searchApp" /></label> <label>Filter Environments: <input data-bind="value: searchEnv" /></label>
+              </form>
+          </div>
+      </div>
+</div>
 <div class="container-fluid">
-    <div class="row-fluid">
-        <p>Filter Props: <input data-bind="value: searchProp" /> Filter Applications: <input data-bind="value: searchApp" /> Filter Environments: <input data-bind="value: searchEnv" /></p>
-    </div>
     <div class="row-fluid">
         <div data-bind="template: { name: 'environmentTemplate', data: environment() }"></div>
     </div>
