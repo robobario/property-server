@@ -1,6 +1,6 @@
 function doOnLoad() {
     window.computed = 0;
-    var host = ""
+    var host = ".."
     var PropertiesApplication = function(data) {
        var self = this;
        self.searchProp = ko.observable("");

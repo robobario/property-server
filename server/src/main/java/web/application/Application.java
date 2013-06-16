@@ -40,7 +40,7 @@ public class Application {
 
 
     private static void startServer(CommandLine commandLine) {
-        String host = "127.0.0.1";
+        String host = "0.0.0.0";
         int port = 8888;
         if (commandLine.hasOption(DIR_OPT)) {
             String optionValue = commandLine.getOptionValue(DIR_OPT);
